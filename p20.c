@@ -1,46 +1,27 @@
 #include <stdio.h>
-#include <math.h>
 
-int get_size(long value) {
-    int count = 0;
-    while (value > 0) {
-        count++;
-        value /= 10;
-    }
-    return count;
+long long karatsuba(long long x, long long y)
+{
+
+    long long x1 = x / 100;
+    long long x0 = x % 100;
+
+    long long y1 = y / 100;
+    long long y0 = y % 100;
+
+    long long z0 = x0 * y0;
+    long long z2 = x1 * y1;
+    long long z1 = (x0 + x1) * (y0 + y1) - z0 - z2;
+
+    return z2 * 10000 + z1 * 100 + z0;
 }
 
+int main()
+{
+    long long x = 12347;
+    long long y = 56787;
+    long long result = karatsuba(x, y);
 
-long karatsuba(long X, long Y) {
-
-    if (X < 10 || Y < 10)
-        return X * Y;
-
-    int size = fmax(get_size(X), get_size(Y));
-    if (size < 10)
-        return X * Y;
-
-    size = (size / 2) + (size % 2);
-    long multiplier = pow(10, size);
-    long b = X / multiplier;
-    long a = X - (b * multiplier);
-    long d = Y / multiplier;
-    long c = Y - (d * multiplier);
-    
-    long u = karatsuba(a, c);
-    long z = karatsuba(a + b, c + d);
-    long v = karatsuba(b, d);
-
-    return u + ((z - u - v) * multiplier) + (v * (long)(pow(10, 2 * size)));
-}
-
-int main() {
-    long x, y;
-    printf("Enter the first number: ");
-    scanf("%ld", &x);
-    printf("Enter the second number: ");
-    scanf("%ld", &y);
-
-    printf("The final product is: %ld\n", karatsuba(x, y));
+    printf("Karatsuba multiplication of %lld and %lld is %lld\n", x, y, result);
     return 0;
 }
